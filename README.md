@@ -5,13 +5,13 @@ Mod allows the player to purchase hotel rooms and various houses, which can be c
 List of Available Properties
 
 Customizable Houses:
--Rdige View cabin (in heartlands)
--Shepherds Rise cabin (near strawberry)
--Argil Rise (near rhodes)
+Rdige View cabin (in heartlands)
+Shepherds Rise cabin (near strawberry)
+Argil Rise (near rhodes)
 
 Hotel rooms:
--Valentine hotel
--Valentine saloon
--Saint Denis hotel
--Rhodes Saloon
--Strawberry Hotel
+Valentine hotel
+Valentine saloon
+Saint Denis hotel
+Rhodes Saloon
+Strawberry Hotel
