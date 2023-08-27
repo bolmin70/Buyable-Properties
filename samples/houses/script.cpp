@@ -88,7 +88,7 @@ bool is_sitting_bed = 0;
 bool choose_sleep = 0;
 
 
-bool is_in_sequence = 0;
+bool is_in_sequence = 0; //fake sleeping sequence/custcene
 void sleepSeq(int time) {
 
 
@@ -196,9 +196,6 @@ void sleepSeq(int time) {
 }
 
 
-
-
-
 const int houseLimit = 8;
 
 // 0 - saint denis room  1 - ridge view;  2 - house near strawberry; 3 - valentine saloon room
@@ -209,15 +206,13 @@ int housesPrice[houseLimit] = { 3000, 18000, 12000, 1500, 2000, 2500, 2300, 1030
 int housesBlip[houseLimit] = { };
 
 
-
-
 int select_clock;
 
 int menu_on;
 
 int current_cell;
 
-
+//Cameras for viewing the properties and upgrading them
 Cam houseCam;
 Cam outsideCam;
 
@@ -233,18 +228,6 @@ Cam outside2Cam;
 Cam outside3Cam;
 Cam outside4Cam;
 Cam outside5Cam;
-
-
-//Cam houseCam2;
-//Cam outsideCam2;
-
-
-
-//Cam houseCam3;
-//Cam outsideCam3;
-
-
-
 
 
 Vector3 LocalCameraVec;
@@ -264,6 +247,7 @@ float ObjectRotZ;
 bool ObjectCollision;
 bool ObjectDynamic;
 
+//vectors for storing temporary and persistent objects 
 vector<Object> tempObjects;
 
 vector<Object> mainObjects;
@@ -279,7 +263,7 @@ bool strawRooms[9] = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 bool argilRooms[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-
+//save data
 void Save()
 {
 	//save
@@ -306,7 +290,7 @@ void Save()
 
 }
 
-
+//load data
 void Load()
 {
 	ifstream LoadFile;
@@ -332,12 +316,10 @@ void Load()
 	LoadFile.close();
 }
 
-
+//load xml map for a room upgrade to the temporary objects vector
 void Room(string path, vector<Object>& stdvector) {
 	if (once == 0) {
-		//CAM::POINT_CAM_AT_COORD(houseCam, 1781.976f, 461.595f, 112.006f);
-		//CAM::RENDER_SCRIPT_CAMS(1, 1, 500, 1, 0, 0);
-		//CAM::SET_CAM_ACTIVE(houseCam, 1);
+
 
 
 		const std::string FilePath = path;
@@ -442,10 +424,10 @@ void Room(string path, vector<Object>& stdvector) {
 }
 
 
-
+//dpad controls for the menu
 int menu_controls(int number_of_cells) {
 
-	//dpad controls
+	
 	if (PAD::IS_CONTROL_JUST_PRESSED(0, MISC::GET_HASH_KEY("INPUT_FRONTEND_UP"))) {
 
 		AUDIO::PLAY_SOUND_FRONTEND("NAV_RIGHT", "PAUSE_MENU_SOUNDSET", 1, 0);
@@ -497,7 +479,7 @@ int menu_controls(int number_of_cells) {
 	return current_cell;
 }
 
-
+//load xml map for a room upgrade to the persistent objects vector 
 void BuyRoom(string path, vector<Object>& stdvector) {
 
 	vector<Object>::iterator objItr;
@@ -606,7 +588,7 @@ void BuyRoom(string path, vector<Object>& stdvector) {
 
 
 Cam localCam;
-
+//menus for all 3 houses
 void Menu() {
 
 	if (menu_on > 0) {
@@ -1338,7 +1320,6 @@ void Menu() {
 
 }
 //1780.750f, 457.612f, 114.019f interior coords
-
 
 void Menu2() {
 
@@ -2850,7 +2831,7 @@ void Menu3() {
 }
 
 
-
+//load all previously bought room upgrades
 void loadRidgeView() {
 
 
@@ -2890,7 +2871,6 @@ void loadRidgeView() {
 	}
 }
 
-
 void loadShepherdsView() {
 
 
@@ -2925,7 +2905,6 @@ void loadShepherdsView() {
 
 
 }
-
 
 void loadArgilView() {
 
@@ -2970,12 +2949,6 @@ void loadArgilView() {
 
 }
 
-//disable movement
-//PED::SET_PED_RESET_FLAG(func_263(uParam0), 258, true);
-//PAD::DISABLE_CONTROL_ACTION(0, -668070958, false);
-//PAD::DISABLE_CONTROL_ACTION(0, 1250966545, false);
-//PAD::DISABLE_CONTROL_ACTION(0, -2131587435, false);
-
 
 int hold_mode_timer;
 
@@ -3011,7 +2984,7 @@ Blip bedBlips[3];
 Vector3 bedCoords[3] = { ridgeBed, strawBed, argilsBed };
 
 
-
+//blips for the beds
 void bedBlip(Vector3 playerPos) {
 
 	for (int i = 0; i < 3; i++) {
@@ -3032,7 +3005,7 @@ void bedBlip(Vector3 playerPos) {
 	}
 
 }
-
+//blips and logic for the weapon locker upgrades
 void weaponLocker(Vector3 playerPos) {
 	for (int i = 0; i < 3; i++) {
 		if (distanceBetween(playerPos, outfittersCoords[i]) < 30.f && INTERIOR::IS_INTERIOR_SCENE()) {
@@ -3092,10 +3065,7 @@ void weaponLocker(Vector3 playerPos) {
 			hold_mode_timer = 0;
 		}
 	}
-	//HUD::_UIPROMPT_SET_GROUP(Prompt_Locker, 1754796591, 1);
-	//HUD::_UIPROMPT_SET_ACTIVE_GROUP_THIS_FRAME(1754796591, 0, 0, 0, 0, 1754796591);
-	//HUD::_UIPROMPT_SET_AMBIENT_GROUP_THIS_FRAME(weaponEnt, 1.f, 1, 1, -484761727, "WARDROBE", 2);
-	//ENTITY::IS_ENTITY_IN_VOLUME
+
 
 
 
@@ -3118,8 +3088,6 @@ void main()
 
 	
 	Misc::createProp(0xE546FB46, Misc::toVector3(1460.9, -1578.68, 71.58), Misc::toVector3(0, 0, 30), 60, 1, 1);
-	//Misc::createProp(0xC503C036, Misc::toVector3(1461.72, -1578.68, 71.614), 60, 1, 1);
-
 
 	//1779.806, 457.615, 111.6
 	Misc::createProp(0x6281781F, Misc::toVector3(1779.206, 459.615, 111.6), 285, 1, 1);
@@ -3136,12 +3104,6 @@ void main()
 	bool room_bought = 0;
 
 
-	//HUD::_UIPROMPT_SET_GROUP(Prompt_Ledger, -2019190071, 0);
-
-	//HUD::_UIPROMPT_SET_ACTIVE_GROUP_THIS_FRAME(-2019190071, (char*)MISC::_CREATE_VAR_STRING(10, "LITERAL_STRING", "Beechers Hope"), 1, 0, 0, 0);
-
-
-
 
 	int roomBlip;
 	int houseBlip;
@@ -3152,37 +3114,10 @@ void main()
 
 
 
-
-
-
-
-
-	//weaponEnt = createProp(1784348138, toVector3(1784.7306, 460.11401, 112.0402), toVector3(0, 0, 0), 0, 1, 1);
-
-
-
-
-
-
-
-
-	//bool once = 0;
-
 	localCam = CAM::CREATE_CAM_WITH_PARAMS("DEFAULT_SCRIPTED_CAMERA", 0, 0, 0, 0, 0, 0, 60, 1, 2);
 
 	houseCam = CAM::CREATE_CAM_WITH_PARAMS("DEFAULT_SCRIPTED_CAMERA", 1774.191, 457.802, 113.f, 0, 0, 0, 60, 1, 2);
 	outsideCam = CAM::CREATE_CAM_WITH_PARAMS("DEFAULT_SCRIPTED_CAMERA", 1774.191, 454.802, 112.283, 0, 0, 0, 60, 1, 2);
-
-	//houseCam2 = CAM::CREATE_CAM_WITH_PARAMS("DEFAULT_SCRIPTED_CAMERA", -1561.542, 243.617, 115.574f, 0, 0, 0, 60, 1, 2);
-	//outsideCam2 = CAM::CREATE_CAM_WITH_PARAMS("DEFAULT_SCRIPTED_CAMERA", -1561.542, 243.617, 113.574f, 0, 0, 0, 60, 1, 2);
-
-	//houseCam3 = CAM::CREATE_CAM_WITH_PARAMS("DEFAULT_SCRIPTED_CAMERA", 1468.489f, -1579.170f, 72.080f, 0, 0, 0, 60, 1, 2);
-	//outsideCam3 = CAM::CREATE_CAM_WITH_PARAMS("DEFAULT_SCRIPTED_CAMERA", 1460.451f, -1589.812f, 71.837f, 0, 0, 0, 60, 1, 2);
-
-
-
-
-
 
 
 	room1Cam = CAM::CREATE_CAM_WITH_PARAMS("DEFAULT_SCRIPTED_CAMERA", 1788.470, 465.166, 114.072, 0, 0, 0, 60, 1, 2);
@@ -3190,9 +3125,6 @@ void main()
 	room3Cam = CAM::CREATE_CAM_WITH_PARAMS("DEFAULT_SCRIPTED_CAMERA", 1780.750f, 457.612f, 114.019f, 0, 0, 0, 60, 1, 2);
 
 	//gun locker
-
-
-
 	outside1Cam = CAM::CREATE_CAM_WITH_PARAMS("DEFAULT_SCRIPTED_CAMERA", 1773.002, 460.635, 114.404, 0, 0, 0, 60, 1, 2);
 	outside2Cam = CAM::CREATE_CAM_WITH_PARAMS("DEFAULT_SCRIPTED_CAMERA", 1782.116, 448.621, 114.349, 0, 0, 0, 60, 1, 2);
 	outside3Cam = CAM::CREATE_CAM_WITH_PARAMS("DEFAULT_SCRIPTED_CAMERA", 1752.424f, 443.926f, 114.179f, 0, 0, 0, 60, 1, 2);
@@ -3202,21 +3134,18 @@ void main()
 
 
 
-
-	
-
-
 	bool init = 0;
 
 
-
+	//experimental
 	int arthur_mode = GetPrivateProfileInt("MISC", "ARTHUR_MODE", 0, ".\\Houses.ini");
 	int epilogue = 0;
+	//if player is john, it means the game is in epilogue
 	if (PED::IS_PED_MODEL(PLAYER::PLAYER_PED_ID(), MISC::GET_HASH_KEY("Player_Three"))) {
 		epilogue = 1;
 	}
 
-
+	
 	if (arthur_mode || epilogue) {
 		if (Houses[1]) {
 			BuyRoom("Houses/ridge_base.xml", mainObjects);
@@ -3231,9 +3160,6 @@ void main()
 		}
 
 
-
-
-
 		loadRidgeView();
 
 		loadShepherdsView();
@@ -3244,7 +3170,8 @@ void main()
 	int current_cash = MONEY::_MONEY_GET_CASH_BALANCE();
 	int next_cash = MONEY::_MONEY_GET_CASH_BALANCE();
 	int cash_timer = MISC::GET_GAME_TIMER() + 10000;
-
+	
+	//extra details for hotel rooms
 	Vector3 roomBeds[6] = { Misc::toVector3(-326.615, 766.180, 121.636), Misc::toVector3(-328.489, 772.667, 121.634),  Misc::toVector3(-326.399, 758.961, 117.436), Misc::toVector3(-326.894, 766.255, 117.434), Misc::toVector3(-1819.358, -367.668, 166.507), Misc::toVector3(1332.767, -1371.250, 80.490) };
 	Vector3 roomWardrobes[6] = { Misc::toVector3(-327.270, 764.147, 121.633), Misc::toVector3(0, 0, 0), Misc::toVector3(-323.196, 759.662, 117.436), Misc::toVector3(-325.125, 766.450, 117.434), Misc::toVector3(-1817.158, -368.672, 166.506), Misc::toVector3(1330.865, -1373.489, 80.490) };
 	Vector3 roomChairs[6] = { Misc::toVector3(-327.270, 764.147, 121.633), Misc::toVector3(0, 0, 0), Misc::toVector3(0, 0, 0), 0, 0 };
@@ -3255,7 +3182,7 @@ void main()
 		Vector3 playerPos = ENTITY::GET_ENTITY_COORDS(player, true, false);
 		Ped playerHorse = PLAYER::_GET_SADDLE_HORSE_FOR_PLAYER(0);
 
-
+		//Update toasts
 		Toasts::updateUI();
 
 
@@ -3275,18 +3202,18 @@ void main()
 		HUD::_UIPROMPT_SET_ENABLED(Prompt_Locker, 0);
 		HUD::_UIPROMPT_SET_VISIBLE(Prompt_Locker, 0);
 
-
+		//RDR2EE deed test
 		if (INVENTORY::_0xE787F05DFC977BDE(INVENTORY::_INVENTORY_GET_PED_INVENTORY_ID(player), MISC::GET_HASH_KEY("DOCUMENT_MACFARLANE_RANCH_DEED"), 0)) {
-			Misc::showSubtitle("1");
+			//Misc::showSubtitle("1");
 		}
 
-		save_timer++;
-		if (save_timer > 100) {
+		
+		if (save_timer < MISC::GET_GAME_TIMER()) {
 
 		
 			Save();
 
-			save_timer = 0;
+			save_timer = MISC::GET_GAME_TIMER() + 1000;
 
 
 			CAM::SET_CAM_ACTIVE(localCam, 0);
@@ -3304,7 +3231,7 @@ void main()
 			CAM::SET_CAM_ACTIVE(outside5Cam, 0);
 			
 			
-
+			
 			if (arthur_mode) {
 				STREAMING::_REMOVE_IMAP(651621232);
 				STREAMING::_REMOVE_IMAP(979670262);
@@ -3319,7 +3246,7 @@ void main()
 
 			}
 		}
-
+		//IMAPS for bringing the properties to pre-epilogue world
 		if (!STREAMING::_IS_IMAP_ACTIVE(-1405375965)) {
 			STREAMING::_REQUEST_IMAP(-1405375965);
 		}
@@ -3387,21 +3314,23 @@ void main()
 
 
 
-
+		/* DEBUG
 		if (IsKeyJustUp(VK_KEY_0)) {
 			CAM::RENDER_SCRIPT_CAMS(0, 0, 500, 1, 0, 0);
 		}
 		if (IsKeyJustUp(VK_KEY_1)) {
 			CAM::RENDER_SCRIPT_CAMS(1, 0, 500, 1, 0, 0);
 		}
+		*/
 
-
+		//extras
 		if (arthur_mode || epilogue) {
 			weaponLocker(playerPos);
 			bedBlip(playerPos);
 		}
 
-		if (arthur_mode || epilogue) {
+		//Upgrade shop
+		if (arthur_mode || epilogue) { 
 			for (int i = 0; i < 3; i++) {
 				if (distanceBetween(playerPos, outfittersCoords[i]) < 30.f) { //TODO add interior check
 					if (!MAP::DOES_BLIP_EXIST(ridgeOutfittersBlips[i]))
@@ -3427,6 +3356,7 @@ void main()
 		HUD::_UIPROMPT_SET_ENABLED(Prompt_Menu, 0);
 		HUD::_UIPROMPT_SET_VISIBLE(Prompt_Menu, 0);
 
+		//Upgrade shop prompts
 		if (arthur_mode || epilogue) {
 			if (distanceBetween(playerPos, ridgeOutfitters) < 2.f && Houses[1]) {
 				HUD::_UIPROMPT_SET_GROUP(Prompt_Menu, -2019190071, 0);
@@ -3530,118 +3460,39 @@ void main()
 
 
 
-
+		//Prompts for peds to buy hotel rooms
 		Entity ent;
 		if (PLAYER::IS_PLAYER_TARGETTING_ANYTHING(0)) {
 			if (PLAYER::GET_PLAYER_TARGET_ENTITY(0, &ent)) {
 				if (ENTITY::IS_ENTITY_A_PED(ent)) {
 					Ped targetPed = ent;
 
-
-
-
-
-					if (!Houses[0]) {
-						// U_M_M_ValHotelOwner_01
+					/* Removed
+					if (!Houses[0]) {					
 						if (PED::IS_PED_MODEL(targetPed, MISC::GET_HASH_KEY("U_M_M_NbxBartender_01"))) {
-							/*
-							//	HUD::_UIPROMPT_SET_AMBIENT_GROUP_THIS_FRAME(ent, 1.f, 1, 1, -484761727, "WARDROBE", 2);
-							textLabel = MISC::_CREATE_VAR_STRING(10, "LITERAL_STRING", "Buy Room ($3000)"); //create text Rent Premium Room ($5.00)
-
-							HUD::_UIPROMPT_SET_TEXT(PromptRoom, (char*)textLabel); //set text
-
-							HUD::_UIPROMPT_SET_VISIBLE(PromptRoom, 1);
-							if (!Houses[0] && MONEY::_MONEY_GET_CASH_BALANCE() >= housesPrice[0] * 100) {
-								HUD::_UIPROMPT_SET_ENABLED(PromptRoom, 1);
-
-							}
-							else {
-								HUD::_UIPROMPT_SET_ENABLED(PromptRoom, 0);
-							}
-
-
-
-
-
-							if (HUD::_UIPROMPT_HAS_HOLD_MODE_COMPLETED(PromptRoom)) {
-								int money = MONEY::_MONEY_GET_CASH_BALANCE();
-								MONEY::_MONEY_DECREMENT_CASH_BALANCE(housesPrice[0] * 100);
-								//MONEY::_MONEY_INCREMENT_CASH_BALANCE(money - housesPrice[0] * 100, 1);
-
-								MAP::REMOVE_BLIP(&housesBlip[0]);
-
-
-								Toasts::showAdvancedNotification("Property Purchased", "You are now the owner of the ~COLOR_GOLD~Saint Denis Hotel Room", "toast_log_blips", "blip_robbery_home", 200);
-
-
-								Houses[0] = 1;
-							}
-
-
-
-
-
-							HUD::_UIPROMPT_SET_GROUP(PromptRoom, HUD::_UIPROMPT_GET_GROUP_ID_FOR_TARGET_ENTITY(ent), 0);
-
-
-							*/
+							
 						}
 
 					}
 
-					if (!Houses[3]) {
-						// U_M_M_ValHotelOwner_01
+					if (!Houses[3]) {					
 						if (PED::IS_PED_MODEL(targetPed, MISC::GET_HASH_KEY("U_M_M_ValBartender_01"))) {
-							/*
-							//	HUD::_UIPROMPT_SET_AMBIENT_GROUP_THIS_FRAME(ent, 1.f, 1, 1, -484761727, "WARDROBE", 2);
-							textLabel = MISC::_CREATE_VAR_STRING(10, "LITERAL_STRING", "Buy Room ($1500)"); //create text Rent Premium Room ($5.00)
-
-							HUD::_UIPROMPT_SET_TEXT(PromptRoom, (char*)textLabel); //set text
-
-
-
-							HUD::_UIPROMPT_SET_VISIBLE(PromptRoom, 1);
-							if (!Houses[3] && MONEY::_MONEY_GET_CASH_BALANCE() >= housesPrice[3] * 100) {
-								HUD::_UIPROMPT_SET_ENABLED(PromptRoom, 1);
-
-							}
-							else {
-								HUD::_UIPROMPT_SET_ENABLED(PromptRoom, 0);
-
-							}
-
-
-							if (HUD::_UIPROMPT_HAS_HOLD_MODE_COMPLETED(PromptRoom)) {
-								int money = MONEY::_MONEY_GET_CASH_BALANCE();
-								MONEY::_MONEY_DECREMENT_CASH_BALANCE(housesPrice[3] * 100);
-								//MONEY::_MONEY_INCREMENT_CASH_BALANCE(money - housesPrice[3] * 100, 1);
-
-								MAP::REMOVE_BLIP(&housesBlip[3]);
-
-								Toasts::showAdvancedNotification("Property Purchased", "You are now the owner of the ~COLOR_GOLD~Valentine Saloon Room", "toast_log_blips", "blip_robbery_home", 200);
-
-
-								Houses[3] = 1;
-							}
-
-
-
-							HUD::_UIPROMPT_SET_GROUP(PromptRoom, HUD::_UIPROMPT_GET_GROUP_ID_FOR_TARGET_ENTITY(ent), 0);
-							*/
-
+							
 
 						}
 
 					}
+					*/
+
 
 					if (!Houses[4]) {
-						// U_M_M_ValHotelOwner_01
+						
 						if (PED::IS_PED_MODEL(targetPed, MISC::GET_HASH_KEY("U_M_M_STRWELCOMECENTER_01"))) {
 
-							//	HUD::_UIPROMPT_SET_AMBIENT_GROUP_THIS_FRAME(ent, 1.f, 1, 1, -484761727, "WARDROBE", 2);
-							textLabel = MISC::_CREATE_VAR_STRING(10, "LITERAL_STRING", "Buy Room ($2000)"); //create text Rent Premium Room ($5.00)
+							
+							textLabel = MISC::_CREATE_VAR_STRING(10, "LITERAL_STRING", "Buy Room ($2000)"); 
 
-							HUD::_UIPROMPT_SET_TEXT(PromptRoom, (char*)textLabel); //set text
+							HUD::_UIPROMPT_SET_TEXT(PromptRoom, (char*)textLabel); 
 
 
 
@@ -3680,13 +3531,13 @@ void main()
 					}
 
 					if (!Houses[5]) {
-						// U_M_M_ValHotelOwner_01
+						
 						if (PED::IS_PED_MODEL(targetPed, MISC::GET_HASH_KEY("U_M_M_RhdBartender_01"))) {
 
-							//	HUD::_UIPROMPT_SET_AMBIENT_GROUP_THIS_FRAME(ent, 1.f, 1, 1, -484761727, "WARDROBE", 2);
-							textLabel = MISC::_CREATE_VAR_STRING(10, "LITERAL_STRING", "Buy Room ($2500)"); //create text Rent Premium Room ($5.00)
+							
+							textLabel = MISC::_CREATE_VAR_STRING(10, "LITERAL_STRING", "Buy Room ($2500)"); 
 
-							HUD::_UIPROMPT_SET_TEXT(PromptRoom, (char*)textLabel); //set text
+							HUD::_UIPROMPT_SET_TEXT(PromptRoom, (char*)textLabel); 
 
 
 
@@ -3725,13 +3576,12 @@ void main()
 					}
 
 					if (!Houses[6]) {
-						// U_M_M_ValHotelOwner_01
+					
 						if (PED::IS_PED_MODEL(targetPed, MISC::GET_HASH_KEY("U_M_M_ValHotelOwner_01"))) {
 
-							//	HUD::_UIPROMPT_SET_AMBIENT_GROUP_THIS_FRAME(ent, 1.f, 1, 1, -484761727, "WARDROBE", 2);
-							textLabel = MISC::_CREATE_VAR_STRING(10, "LITERAL_STRING", "Buy Room ($2300)"); //create text Rent Premium Room ($5.00)
+							textLabel = MISC::_CREATE_VAR_STRING(10, "LITERAL_STRING", "Buy Room ($2300)"); 
 
-							HUD::_UIPROMPT_SET_TEXT(PromptRoom, (char*)textLabel); //set text
+							HUD::_UIPROMPT_SET_TEXT(PromptRoom, (char*)textLabel); 
 
 
 
@@ -3776,21 +3626,7 @@ void main()
 			}
 		}
 
-
-
-
-
-
-		//HUD::_UIPROMPT_SET_VISIBLE(PromptRoom, 1);
-		//HUD::_UIPROMPT_SET_GROUP(PromptRoom, -484761727, 0);
-
-		//-484761727
-
-
-
-
-
-
+		//Adds doors to the system, to allow them to be manipulated by the script
 		OBJECT::_ADD_DOOR_TO_SYSTEM_NEW(2188892390, 1, 1, 1, 1, 1, 1);
 		OBJECT::_ADD_DOOR_TO_SYSTEM_NEW(2472180395, 1, 1, 1, 1, 1, 1);
 
@@ -3803,21 +3639,16 @@ void main()
 
 		OBJECT::_ADD_DOOR_TO_SYSTEM_NEW(2046695029, 1, 1, 1, 1, 1, 1);
 
-
 		OBJECT::_ADD_DOOR_TO_SYSTEM_NEW(3693364451, 1, 1, 1, 1, 1, 1);
-
 
 		OBJECT::_ADD_DOOR_TO_SYSTEM_NEW(3327934361, 1, 1, 1, 1, 1, 1);
 		OBJECT::_ADD_DOOR_TO_SYSTEM_NEW(3014302262, 1, 1, 1, 1, 1, 1);
 
 
 
-
+		//hide prompts
 		HUD::_UIPROMPT_SET_VISIBLE(PromptBuy, 0);
 		HUD::_UIPROMPT_SET_ENABLED(PromptBuy, 0);
-
-
-
 
 		HUD::_UIPROMPT_SET_VISIBLE(Prompt_Sleep2, 0);
 		HUD::_UIPROMPT_SET_ENABLED(Prompt_Sleep2, 0);
@@ -3841,6 +3672,7 @@ void main()
 		HUD::_UIPROMPT_SET_VISIBLE(Prompt_Sit, 0);
 		HUD::_UIPROMPT_SET_ENABLED(Prompt_Sit, 0);
 
+		//display sleep and weapon locker prompts when near the coords
 		if (distanceBetween(playerPos, roomWardrobes[0]) < 1.f ||
 			distanceBetween(playerPos, roomWardrobes[1]) < 1.f ||
 			distanceBetween(playerPos, roomWardrobes[2]) < 1.f ||
@@ -4073,9 +3905,7 @@ void main()
 			}
 		}
 
-		//PROP_PLAYER_SLEEP_BED
-
-
+	
 
 		for (int i = 0; i <= houseLimit - 1; i++) {
 
@@ -4140,7 +3970,7 @@ void main()
 			}
 		}
 
-
+		
 		if (distanceBetween(playerPos, housesBuy[0]) < 3.f) {
 			HUD::_UIPROMPT_SET_ENABLED(PromptBuy, 0);
 			HUD::_UIPROMPT_SET_VISIBLE(PromptBuy, 0);
@@ -4214,7 +4044,6 @@ void main()
 			}
 
 		}
-
 
 		if (distanceBetween(playerPos, housesBuy[3]) < 3.f) {
 			HUD::_UIPROMPT_SET_ENABLED(PromptBuy, 0);
@@ -4312,7 +4141,7 @@ void main()
 
 		int test;
 
-
+		//Load base house equipment
 		if (distanceBetween(Misc::toVector3(1328.224, -1293.651, 77.016), playerPos) < 15.f) {
 			test = MONEY::_MONEY_GET_CASH_BALANCE() + 5000 * 100;
 			if (test <= current_cash) {
@@ -4371,35 +4200,14 @@ void main()
 		}
 
 
-
-
-
 		HUD::_UIPROMPT_SET_TEXT(PromptBuy, (char*)textLabel); //set text
 
 
 
-		//TODO saint denis
-		if (Houses[0]) {
-			//OBJECT::DOOR_SYSTEM_SET_DOOR_STATE(1555588463, 0);
-
-
-
-		}
-
-
-
-
+		//Door setups for all the properties
 		if (Houses[1]) {
 			OBJECT::DOOR_SYSTEM_SET_DOOR_STATE(2188892390, 0);
 			OBJECT::DOOR_SYSTEM_SET_DOOR_STATE(2472180395, 0);
-
-
-			//	PROPSET::_REQUEST_PROP_SET(MISC::GET_HASH_KEY("pg_player_campfire_add05x_bed"));
-				//PROPSET::_CREATE_PROP_SET(MISC::GET_HASH_KEY("pg_player_campfire_add05x_bed"), 1781.169, 466.942, 113.038, 1, 1, 1, 1, 1);
-
-			//	PROPSET::_REQUEST_PROP_SET(MISC::GET_HASH_KEY("pg_player_campfire_add01x"));
-			//	PROPSET::_CREATE_PROP_SET(MISC::GET_HASH_KEY("pg_player_campfire_add01x"), 1777.253, 458.067, 112.494, 1, 1, 1, 1, 1);
-
 
 		}
 		else {
@@ -4407,17 +4215,9 @@ void main()
 			OBJECT::DOOR_SYSTEM_SET_DOOR_STATE(2472180395, 1);
 		}
 
-
-
 		if (Houses[2]) {
 			OBJECT::DOOR_SYSTEM_SET_DOOR_STATE(3221874820, 0);
 			OBJECT::DOOR_SYSTEM_SET_DOOR_STATE(2366407202, 0);
-
-			//PROPSET::_REQUEST_PROP_SET(MISC::GET_HASH_KEY("pg_player_campfire_add05x_bed"));
-			//PROPSET::_CREATE_PROP_SET(MISC::GET_HASH_KEY("pg_player_campfire_add05x_bed"), -1552.026, 257.308, 114.799, 1, 1, 1, 1, 1);
-
-			//PROPSET::_REQUEST_PROP_SET(MISC::GET_HASH_KEY("pg_player_campfire_add01x"));
-			//PROPSET::_CREATE_PROP_SET(MISC::GET_HASH_KEY("pg_player_campfire_add01x"), -1557.876, 246.308, 113.899, 1, 1, 1, 1, 1);
 
 		}
 		else {
@@ -4425,37 +4225,24 @@ void main()
 			OBJECT::DOOR_SYSTEM_SET_DOOR_STATE(2366407202, 1);
 		}
 
-
 		OBJECT::DOOR_SYSTEM_SET_DOOR_STATE(1087218607, 0);
 		if (Houses[3]) {
-			//OBJECT::DOOR_SYSTEM_SET_DOOR_STATE(1087218607, 0);
 
-			//PROPSET::_REQUEST_PROPSET(MISC::GET_HASH_KEY("pg_player_campfire_add05x_bed"));
-			//PROPSET::_CREATE_PROPSET(MISC::GET_HASH_KEY("pg_player_campfire_add05x_bed"), housesVecs[3].x + 2, housesVecs[3].y + 3, housesVecs[3].z, 1, 1, 1, 1, 1);
 
 		}
 		else {
-			//OBJECT::DOOR_SYSTEM_SET_DOOR_STATE(1087218607, 1);
 		}
-
 
 		if (Houses[4]) {
 			OBJECT::DOOR_SYSTEM_SET_DOOR_STATE(1562553736, 0);
-
-		//	PROPSET::_REQUEST_PROPSET(MISC::GET_HASH_KEY("pg_player_campfire_add05x_bed"));
-		//	PROPSET::_CREATE_PROPSET(MISC::GET_HASH_KEY("pg_player_campfire_add05x_bed"), housesVecs[4].x - 0.5f, housesVecs[4].y + 2, housesVecs[4].z, 1, 1, 1, 1, 1);
 
 		}
 		else {
 			OBJECT::DOOR_SYSTEM_SET_DOOR_STATE(1562553736, 1);
 		}
 
-
 		if (Houses[5]) {
 			OBJECT::DOOR_SYSTEM_SET_DOOR_STATE(2046695029, 0);
-
-		//	PROPSET::_REQUEST_PROPSET(MISC::GET_HASH_KEY("pg_player_campfire_add05x_bed"));
-		//	PROPSET::_CREATE_PROPSET(MISC::GET_HASH_KEY("pg_player_campfire_add05x_bed"), housesVecs[5].x - 0.5f, housesVecs[5].y + 2, housesVecs[5].z, 1, 1, 1, 1, 1);
 
 		}
 		else {
@@ -4465,18 +4252,12 @@ void main()
 		if (Houses[6]) {
 			OBJECT::DOOR_SYSTEM_SET_DOOR_STATE(3693364451, 0);
 
-			//PROPSET::_REQUEST_PROPSET(MISC::GET_HASH_KEY("pg_player_campfire_add05x_bed"));
-			//PROPSET::_CREATE_PROPSET(MISC::GET_HASH_KEY("pg_player_campfire_add05x_bed"), housesVecs[6].x - 1.f, housesVecs[6].y + 2, housesVecs[6].z - 0.1, 1, 1, 1, 1, 1);
-
-
 		}
 		else {
-
 			OBJECT::DOOR_SYSTEM_SET_DOOR_STATE(3693364451, 1);
 		}
 
 		if (Houses[7]) {
-
 			OBJECT::DOOR_SYSTEM_SET_DOOR_STATE(3327934361, 0);
 			OBJECT::DOOR_SYSTEM_SET_DOOR_STATE(3014302262, 0);
 

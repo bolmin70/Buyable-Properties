@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+samples/houses/.vs/Houses/v16/.suo
+*.db
+*.ipch
+*.user
